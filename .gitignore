@@ -144,6 +144,7 @@ venv.bak/
 .ropeproject
 
 # mkdocs documentation
+
 /site
 
 # mypy
@@ -169,3 +170,5 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+output/tests/
