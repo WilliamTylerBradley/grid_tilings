@@ -12,7 +12,7 @@ import numpy as np
 
 
 class Point:
-    '''
+    """
     Point class containing location information.
 
     Attributes:
@@ -20,10 +20,10 @@ class Point:
         base_location: np.array() location in the tiling space
         centered_location: np.array() location in the tiling space that
             has been moved so the base_point is at (0, 0)
-    '''
+    """
 
     def __init__(self, k_values, cos_list, sin_list, mid_point):
-        '''
+        """
         Constructor for a Point.
 
         Args:
@@ -31,7 +31,7 @@ class Point:
             cos_list: cosine values of the Multigrid
             sin_list: sin values of the Multigrid
             mid_point: center of the tilings
-        '''
+        """
 
         self.k_values = k_values
 
@@ -48,7 +48,7 @@ class Point:
 
 
 class Line:
-    '''
+    """
     Line class used to build up a Multigrid.
 
     Follows the standard form a line.
@@ -62,10 +62,10 @@ class Line:
         k: k value (optional)
         grid: grid number (optional)
         angles: angles of the x-axis
-    '''
+    """
 
     def __init__(self, a, b, o, k=0, grid=None):
-        '''
+        """
         Constructor for Line.
 
         Arg:
@@ -74,7 +74,7 @@ class Line:
             c: constant value, created by adding offset and k value
             o: k value (optional)
             grid: grid number (optional)
-        '''
+        """
 
         self.a = a
         self.b = b
@@ -102,7 +102,7 @@ class Line:
                 f'k={self.k}, grid={self.grid}')
 
     def determine_intersection(self, other_line, decimals=7):
-        '''
+        """
         Finds the intersection between this Line and another one.
 
         Args:
@@ -114,7 +114,7 @@ class Line:
 
         Raises:
             OverlappingLines: if the Lines are the same
-        '''
+        """
 
         # denominator for formula for the intersection
         # if this is zero then the lines are parallel or overlap
@@ -173,7 +173,7 @@ class Line:
             return (np.round(x, decimals), np.round(y, decimals))
 
     def draw_line(self, ax):
-        '''
+        """
         Draws the line.
 
         Example:
@@ -182,7 +182,7 @@ class Line:
             fig, ax = plt.subplots()
             l.draw_line(ax)
             plt.show()
-        '''
+        """
 
         graph_points = []
 
@@ -232,7 +232,7 @@ class Line:
 
 
 class OverlappingLines(Exception):
-    '''Exception for lines that are the same.'''
+    """Exception for lines that are the same."""
     def __init__(self, line_1, line_2,
                  msg="These two lines are the same line."):
         self.line_1 = line_1
@@ -245,30 +245,30 @@ class OverlappingLines(Exception):
 
 
 class Edge:
-    '''
+    """
     Class used for tile edges.
 
     This doesn't relate to the Line class at all.
-    '''
+    """
 
     def __init__(self, point_ids, tile_id):
-        '''
+        """
         Constructor for Edge.
 
         Args:
             point_ids: Points for the ends of the edge
             tile_id: starting tile_id
-        '''
+        """
         self.points = point_ids
         self.tile_ids = [tile_id]
 
     def add_tile_id(self, tile_id):
-        '''
+        """
         Adds a tile_id to the list of adjacent tiles
 
         Raises:
             OverusedEdge: if there are more than two tiles
-        '''
+        """
         self.tile_ids.append(tile_id)
 
         if len(self.tile_ids) > 2:
@@ -282,11 +282,11 @@ class Edge:
 
 
 class OverusedEdge(Exception):
-    '''
+    """
     Exception for when an edge has more than two tiles one it.
 
     Happens when the floating point fails on a point with multiple lines
-    '''
+    """
     def __init__(self, edge, msg="This edge has more than two tiles."):
         self.edge = edge
         self.msg = msg
@@ -297,7 +297,7 @@ class OverusedEdge(Exception):
 
 
 class Tile:
-    '''
+    """
     Class used for the Tile.
 
     Attributes:
@@ -312,9 +312,9 @@ class Tile:
             through other tiles. Used to remove unconnected tiles.
         interior_angles: angles inside the tile. Used determine similar
             tiles and thus the tile_group.
-    '''
+    """
     def __init__(self, tile_points, intersection_points, intersection_lines):
-        '''
+        """
         Constructor for a Tile
 
         Args:
@@ -323,7 +323,7 @@ class Tile:
                 creates the tile
             intersection_lines: lines from the Multigrid that intersect
                 on the tile
-        '''
+        """
         self.tile_points = tile_points
         self.intersection_points = intersection_points
         self.intersection_lines = intersection_lines
@@ -354,10 +354,10 @@ class Tile:
             self.interior_angles.append(angle)
 
     def compare_angles(self, other_polygon):
-        '''
+        """
         Compare this tile to another one to see if they have the
             same shape
-        '''
+        """
 
         # Do they even have the same number of angles?
         if len(self.interior_angles) != len(other_polygon.interior_angles):
@@ -387,7 +387,7 @@ class Tile:
         return False
 
     def draw_tile(self, ax):
-        '''
+        """
         Draws the tile.
 
         Example:
@@ -417,7 +417,7 @@ class Tile:
             fig, ax = plt.subplots()
             t.draw_tile(ax)
             plt.show()
-        '''
+        """
 
         # Determine boundary box
         min_x = np.Inf
@@ -491,7 +491,7 @@ class Tile:
         return ax
 
     def draw_line_angles(self, ax):
-        '''Draws the lines and their angles.'''
+        """Draws the lines and their angles."""
 
         angles = [np.pi * x / 4 for x in range(-4, 4, 1)]
         angles_color = ['black' for x in angles]
@@ -519,7 +519,7 @@ class Tile:
 
 
 class Multigrid:
-    '''
+    """
     Multigrid class used create the grid of Lines to create the Tiles.
 
     This is the main workhorse for the package.
@@ -544,7 +544,7 @@ class Multigrid:
         base_tiles: tile of unique tile shapes, used to determine Tile
             coloring
         tiles: dictionary of Tiles
-    '''
+    """
 
     def __init__(self,
                  seed=None,
@@ -554,7 +554,7 @@ class Multigrid:
                  base_point=(),
                  offsets=[],
                  colors=[]):
-        '''
+        """
         Constructor for a Multigrid
 
         Args:
@@ -565,7 +565,7 @@ class Multigrid:
             base_point: Location to move the multigrid to
             offsets: Movement from the center for each of the grids
             colors: Colors for the tile groups
-        '''
+        """
         self.seed = seed
         self.rng = np.random.default_rng(self.seed)
 
@@ -627,17 +627,17 @@ class Multigrid:
             self.mid_point += k * np.array([c, s])
 
     def update_edges(self, points, tile_id):
-        '''Only used to update edges when creating tiles'''
+        """Only used to update edges when creating tiles"""
         if points in self.edges:
             self.edges[points].add_tile_id(tile_id)
         else:
             self.edges[points] = Edge(points, tile_id)
 
     def create_tiles(self):
-        '''
+        """
         Creates the tiles from the intersections of lines in the
             Multigrid
-        '''
+        """
 
         self.points = {}
 
@@ -664,8 +664,8 @@ class Multigrid:
                     self.intersections[intersection].update([l1, l2])
             # A bad combination of offsets with an even number of grids
             #   can produce lines that overlap (because two grids end up
-            #   one unit apart, but are in the same direction). If that
-            #   happens, it should break.
+            #   one unit apart, but in the exact opposite direction).
+            #   If that happens, it should break.
             except OverlappingLines as e:
                 print(e)
                 raise
@@ -676,16 +676,19 @@ class Multigrid:
         for (intersection_points,
              intersection_lines) in self.intersections.items():
 
-            # Maybe, get all the angles in order
+            # We need to build a tile from each intersection. The points
+            #   of a tile are in between the lines that make up an
+            #   intersection. We'll loop through the lines in circle
+            #   crossing over each line and then back over them as we
+            #   go all the way around. So first order the lines by
+            #   angle.
             angles = []
             for line in intersection_lines:
                 angles.extend(line.angles.copy())
             angles.sort()
 
-            # #start with right above (or below) the first one,
-            # (maybe need to get to second+ line to get all the K's)
-            # then continue looping through
-            # Set up K values for the other lines
+            # Then, set up K values for the other lines. The k values
+            #   that are for the lines get pulled from them.
             ks = [self.determine_K(c, intersection_points[0],
                                    s, intersection_points[1], o)
                   for c, s, o in zip(self.cos_list,
@@ -693,10 +696,13 @@ class Multigrid:
                                      self.offsets)]
 
             # Now spin around to ensure the ks are correct on the lines
-            # that intersect
+            #   that intersect for the starting point (the left side of
+            #   the circle).
             for angle in angles:
                 ks[angle.grid] = angle.k
 
+            # Finally, loop through again with all the k values set
+            #   correctly, update them as each line is crossed.
             tile_points = []
             for angle in angles:
                 ks[angle.grid] = angle.k
@@ -712,10 +718,12 @@ class Multigrid:
 
             t = Tile(tile_points, intersection_points, intersection_lines)
 
+            # Create an Edge for each edge of a Tile
             for t_current, t_next in zip(t.tile_points,
                                          t.tile_points[1:]
                                          + [t.tile_points[0]]):
-                # Check left to right, then down to up
+                # Check left to right, then down to up to make sure the
+                #   edges dictionary keys match
                 if t_current.base_location[1] < t_next.base_location[1]:
                     self.update_edges(points=(t_current.k_values,
                                               t_next.k_values),
@@ -733,6 +741,7 @@ class Multigrid:
                                               t_current.k_values),
                                       tile_id=t.tile_id)
 
+            # Assign a tile_group number for coloring later
             bt_match = False
             for bt in self.base_tiles:
                 if bt.compare_angles(t):
@@ -752,14 +761,21 @@ class Multigrid:
                 self.colors.append(self.random_color())
 
     def remove_unconnected_tiles(self):
-        # Only needed if drawing all tiles and don't want unconnected ones
+        """
+        Removes tiles that aren't connected to the center.
+
+        Only needed if drawing all tiles and don't want any of the
+        unconnected ones.
+        """
+
+        # Build out network of neighbors
         neighbors = defaultdict(list)
         for edge in self.edges.values():
             if len(edge.tile_ids) == 2:
                 neighbors[edge.tile_ids[0]].append(edge.tile_ids[1])
                 neighbors[edge.tile_ids[1]].append(edge.tile_ids[0])
 
-        # Find center-ish tile
+        # Find a center-ish tile
         for tile_id, tile in self.tiles.items():
             tile_point = tile.tile_points[0]
             tile_distance = tile_point.centered_location[0]**2
@@ -798,7 +814,9 @@ class Multigrid:
             del self.edges[edge]
 
     def draw_image(self, ax):
-        '''
+        """
+        Draws the main image.
+
         mg = Multigrid(grid_count=5,
                             grid_bounds=[-5, 5], rotation=0,
                             base_point = [0, 0],
@@ -809,7 +827,9 @@ class Multigrid:
         ax = self.draw_image(ax)
         plt.tight_layout()
         plt.show()
-        '''
+        """
+        # Find the closest distance between the center and all the edges
+        #   that don't have two tiles
         closest_distance = np.inf
 
         for edge in self.edges.values():
@@ -819,11 +839,13 @@ class Multigrid:
                     + self.points[p].centered_location[1] ** 2
                     if p_distance < closest_distance:
                         closest_distance = p_distance
-
         closest_distance = np.sqrt(closest_distance)
 
+        # Set this distance as the diagonal of a square for the image
+        #   bounds.
         image_bounds = closest_distance / np.sqrt(2)
 
+        # Set up all the tiles as polygons
         polygons = []
         polygon_colors = []
         for t in self.tiles.values():
@@ -843,7 +865,9 @@ class Multigrid:
         ax.axis('off')
 
     def save_image(self, image_location, figsize=(5, 5), dpi=150):
-        '''
+        """
+        Save the main image
+
         mg = Multigrid(grid_count=5,
                             grid_bounds=[-5, 5], rotation=0,
                             base_point = [0, 0],
@@ -851,7 +875,7 @@ class Multigrid:
         mg.create_tiles()
         mg.remove_unconnected_tiles()
         mg.save_image('output/graph.png')
-        '''
+        """
 
         fig, ax = plt.subplots(figsize=figsize)
         self.draw_image(ax)
@@ -860,6 +884,7 @@ class Multigrid:
         plt.close()
 
     def determine_base_K(self, p, c, s, o):
+        """Set the k values if there's a base_point"""
         # If it's on a line, lower it to the origin
         if isclose(((c * p[0] + s * p[1]) % 1), o,
                    rel_tol=1e-5, abs_tol=1e-05):
@@ -870,13 +895,15 @@ class Multigrid:
             else:
                 return 0
 
-        base_k = np.ceil(c * p[0] + s * p[1] - o)  # change to use determine_K
+        base_k = self.determine_K(c, p[0], s, p[1], o)
         return base_k
 
     def determine_K(self, c, x, s, y, o):
+        """Formula for the k values"""
         return np.ceil(c * x + s * y - o)
 
     def random_color(self):
+        """Draws a random color from oklab"""
         converts_rgb = False
 
         while not converts_rgb:
@@ -894,6 +921,7 @@ class Multigrid:
         return rgb
 
     def oklab(self, L, a, b):
+        """Converts oklab to rgb"""
         new_l = L + 0.3963377774 * a + 0.2158037573 * b
         new_m = L - 0.1055613458 * a - 0.0638541728 * b
         new_s = L - 0.0894841775 * a - 1.2914855480 * b
@@ -924,6 +952,7 @@ class Multigrid:
         return rgb_correct
 
     def draw_oklab(self, L):
+        """Draws a slice of oklab colorspace"""
         A, B = np.meshgrid(np.arange(-.3, .3, .001), np.arange(-.3, .3, .001))
         r = np.zeros_like(A)
         g = np.zeros_like(A)
@@ -954,6 +983,7 @@ class Multigrid:
         plt.show()
 
     def draw_offsets(self, ax):
+        """Draws the offsets"""
         x = [x * o + self.base_point[0] for x, o in
              zip(self.cos_list, self.offsets)]
         y = [y * o + self.base_point[1] for y, o in
@@ -968,6 +998,7 @@ class Multigrid:
         return ax
 
     def draw_grids(self, ax):
+        """Draws the grids"""
         min_x = np.Inf
         max_x = -np.Inf
         min_y = np.Inf
@@ -1007,9 +1038,6 @@ class Multigrid:
             draw_lines.append(points)
             draw_color.append(line.grid)
 
-        # need function to draw just one line, in the line class
-        # get grid colors by using cos, sin list, then appropriate radius
-
         colors = [self.grid_colors[g] for g in draw_color]
         ax.add_collection(LineCollection(draw_lines, colors=colors))
 
@@ -1019,6 +1047,7 @@ class Multigrid:
         return ax
 
     def draw_k(self, ax, this_grid):
+        """Draws the k values for one grid"""
         these_lines = [line for line in self.grids if line.grid == this_grid]
         this_cos = self.cos_list[this_grid]
         this_sin = self.sin_list[this_grid]
@@ -1085,6 +1114,7 @@ class Multigrid:
         return ax
 
     def draw_all_tiles(self, ax):
+        """Draws all the tiles"""
         min_x = np.Inf
         max_x = -np.Inf
         min_y = np.Inf
