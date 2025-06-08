@@ -199,10 +199,10 @@ class Line:
             graph_points.append(((self.c - self.b*5)/self.a, 5))
 
         # Build out boundary
-        min_x = np.Inf
-        max_x = -np.Inf
-        min_y = np.Inf
-        max_y = -np.Inf
+        min_x = np.inf
+        max_x = -np.inf
+        min_y = np.inf
+        max_y = -np.inf
 
         for i in graph_points:
             if i[0] < min_x:
@@ -420,10 +420,10 @@ class Tile:
         """
 
         # Determine boundary box
-        min_x = np.Inf
-        max_x = -np.Inf
-        min_y = np.Inf
-        max_y = -np.Inf
+        min_x = np.inf
+        max_x = -np.inf
+        min_y = np.inf
+        max_y = -np.inf
 
         line_base_point = self.intersection_points
         tile_points = []
@@ -835,8 +835,8 @@ class Multigrid:
         for edge in self.edges.values():
             if len(edge.tile_ids) == 1:
                 for p in edge.points:
-                    p_distance = self.points[p].centered_location[0] ** 2
-                    + self.points[p].centered_location[1] ** 2
+                    p_distance = (self.points[p].centered_location[0] ** 2
+                                  + self.points[p].centered_location[1] ** 2)
                     if p_distance < closest_distance:
                         closest_distance = p_distance
         closest_distance = np.sqrt(closest_distance)
@@ -999,10 +999,10 @@ class Multigrid:
 
     def draw_grids(self, ax):
         """Draws the grids"""
-        min_x = np.Inf
-        max_x = -np.Inf
-        min_y = np.Inf
-        max_y = -np.Inf
+        min_x = np.inf
+        max_x = -np.inf
+        min_y = np.inf
+        max_y = -np.inf
 
         for i in self.intersections.keys():
             if i[0] < min_x:
@@ -1115,10 +1115,10 @@ class Multigrid:
 
     def draw_all_tiles(self, ax):
         """Draws all the tiles"""
-        min_x = np.Inf
-        max_x = -np.Inf
-        min_y = np.Inf
-        max_y = -np.Inf
+        min_x = np.inf
+        max_x = -np.inf
+        min_y = np.inf
+        max_y = -np.inf
 
         polygons = []
         polygon_colors = []

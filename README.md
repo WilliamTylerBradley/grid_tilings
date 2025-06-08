@@ -1,6 +1,10 @@
 # grid_tilings
 Tilings from multigrids
 
+```
+pip install grid_tilings@git+https://github.com/WilliamTylerBradley/grid_tilings
+```
+
 Create a multigrid and use it to create a tiling pattern.
 ```
 import grid_tilings
